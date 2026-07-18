@@ -3,7 +3,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- ts is the epoch second at render time; +30 makes the next URL distinct so GitHub Pages CDN can't serve a cached copy on refresh -->
-  <meta http-equiv="refresh" content="30; url=https://mikezy.github.io/pulse-display/?t=1784396678">
+  <meta http-equiv="refresh" content="30; url=https://mikezy.github.io/pulse-display/?t=1784396914">
   <title>Pulse</title>
   <style>
     /* Tuned for Kindle Colorsoft (~1264x1680 physical / 632x840 CSS px, 7" portrait).
@@ -15,35 +15,35 @@
       font-family: Georgia, serif;
       background: #fff;
       color: #232F3E;
-      padding: 8px 24px 6px;   /* dense: Kindle browser chrome eats ~120px, keep total under ~700 */
+      padding: 10px 24px 8px;  /* dense: Kindle browser chrome eats ~120px; verified fit 2026-07-18, ~150px headroom kept for rebalance */
     }
 
     /* HEADER */
-    .head { text-align: center; margin-bottom: 6px; }
+    .head { text-align: center; margin-bottom: 8px; }
     h1 {
-      font-size: 30px; margin: 0; letter-spacing: 6px; font-weight: bold;
+      font-size: 34px; margin: 0; letter-spacing: 7px; font-weight: bold;
       color: #232F3E;
     }
     h1 .dot { color: #E08E00; }
-    .sub { font-style: italic; color: #E08E00; font-size: 12px; margin-top: 2px; letter-spacing: 1px; }
+    .sub { font-style: italic; color: #E08E00; font-size: 13px; margin-top: 2px; letter-spacing: 1px; }
 
     /* SECTION HEADERS */
     h2 {
-      margin: 8px 0 5px; font-size: 11px; letter-spacing: 3px;
+      margin: 10px 0 6px; font-size: 11px; letter-spacing: 3px;
       text-align: center; font-weight: bold; color: #232F3E;
-      border-bottom: 1px solid #E08E00; padding-bottom: 3px;
+      border-bottom: 1px solid #E08E00; padding-bottom: 4px;
     }
 
     /* GRIDS */
     .grid { width: 100%; border-collapse: collapse; table-layout: fixed; }
     .grid td {
-      padding: 3px 4px;
+      padding: 4px 4px;
       font-variant-numeric: tabular-nums; vertical-align: top;
       word-wrap: break-word; text-align: center;
     }
-    .num { font-size: 18px; font-weight: bold; line-height: 1.1; color: #232F3E; }
+    .num { font-size: 20px; font-weight: bold; line-height: 1.1; color: #232F3E; }
     .lbl {
-      font-size: 9px; text-transform: uppercase; letter-spacing: 1.5px;
+      font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px;
       color: #545B64; margin-top: 2px;
     }
 
@@ -51,19 +51,19 @@
        Rows: CLAUDE CODE / CODEX / TOTAL.
        Cols: SESSIONS · MSGS · TOKENS · DAYS · STREAK (cur/longest). */
     .agents { width: 100%; border-collapse: collapse; table-layout: fixed; }
-    .agents th, .agents td { padding: 3px 4px; font-variant-numeric: tabular-nums; }
+    .agents th, .agents td { padding: 4px 4px; font-variant-numeric: tabular-nums; }
     .agents thead th {
-      font-size: 9px; letter-spacing: 1.5px; color: #545B64;
+      font-size: 10px; letter-spacing: 1.5px; color: #545B64;
       text-transform: uppercase; font-weight: bold; text-align: right;
       border-bottom: 1px solid #E08E00;
     }
     .agents thead th.rowlbl { text-align: left; }
     .agents td.rowlbl {
-      font-size: 10px; letter-spacing: 1px; text-transform: uppercase;
+      font-size: 11px; letter-spacing: 1px; text-transform: uppercase;
       color: #545B64; font-weight: bold; text-align: left;
     }
     .agents td.n {
-      font-size: 16px; font-weight: bold; color: #232F3E; text-align: right;
+      font-size: 18px; font-weight: bold; color: #232F3E; text-align: right;
       white-space: nowrap;
     }
     .agents tr.total td { border-top: 1px solid #E08E00; }
@@ -72,18 +72,22 @@
     /* HEATMAP — 7 rows (days, Mon top → Sun bottom) × 5 cols (weeks, oldest → current).
        Yellow/amber ramp. Each step holds saturation so it survives Kaleido's
        gray-bias compression. L1 is full butter yellow, not a pale wash. */
-    .heatwrap { display: flex; gap: 6px; align-items: stretch; padding: 1px 10px 0; }
+    .heatwrap { display: flex; gap: 7px; align-items: stretch; padding: 1px 10px 0; }
     .daylabels {
       display: flex; flex-direction: column; justify-content: space-around;
       font-size: 9px; color: #545B64; padding: 1px 0;
       text-transform: uppercase; letter-spacing: 1px; font-weight: bold;
     }
-    .heatgrid { flex: 1; border-collapse: separate; border-spacing: 3px; }
-    .heatgrid td { width: 25%; height: 15px; border-radius: 3px; }
-    .h0 { background: #EBEDF0; }            /* empty — pale gray */
-    .h1 { background: #FFE066; }            /* butter yellow — saturated */
-    .h2 { background: #FFB300; }            /* amber */
-    .h3 { background: #E08E00; }            /* deep amber */
+    .heatgrid { flex: 1; border-collapse: separate; border-spacing: 4px; }
+    .heatgrid td { width: 25%; height: 20px; border-radius: 3px; }
+    /* Contrast ramp v2 — Kindle photo (2026-07-18) showed L1-L3 collapsing into
+       muted tans on the Colorsoft panel. Widen luminance spread: L1 stays bright
+       yellow, L2 goes full orange, L3 goes dark burnt amber so adjacent levels
+       differ in BOTH hue and brightness (survives Kaleido gray-bias). */
+    .h0 { background: #F2F3F5; }            /* empty — pale gray */
+    .h1 { background: #FFD500; }            /* vivid yellow */
+    .h2 { background: #F28C00; }            /* strong orange */
+    .h3 { background: #9C5700; }            /* dark burnt amber */
 
     .footer {
       font-size: 12px; color: #232F3E; margin-top: 6px;
@@ -130,8 +134,8 @@
 
   <h2>SYSTEM</h2>
   <table class="grid"><tr>
-    <td><div class="num">29.2%</div><div class="lbl">CPU</div></td>
-    <td><div class="num">17.7/48.0</div><div class="lbl">RAM (GB)</div></td>
+    <td><div class="num">19.1%</div><div class="lbl">CPU</div></td>
+    <td><div class="num">18.5/48.0</div><div class="lbl">RAM (GB)</div></td>
     <td><div class="num">13/494</div><div class="lbl">DISK (GB)</div></td>
     <td><div class="num">80%<span style="font-size:14px;"> AC</span></div><div class="lbl">BATTERY</div></td>
   </tr></table>
@@ -147,8 +151,8 @@
     <tbody>
       <tr>
         <td class="rowlbl">Claude</td>
-        <td class="n">5,670</td>
-        <td class="n">210,307</td>
+        <td class="n">5,671</td>
+        <td class="n">210,339</td>
         <td class="n">11.76B</td>
         <td class="n">41</td>
         <td class="n">38/38</td>
@@ -172,16 +176,16 @@
       <tr>
         <td class="rowlbl">Bridge&nbsp;<span class="est" title="Remote machines via the MacBook LiteLLM proxy (Windows cc/ccfable/codexgpt/Codex app, Mac mini). Sessions not tracked (stateless proxy). Logging began 2026-07-15.">†</span></td>
         <td class="n">&mdash;</td>
-        <td class="n">2,027</td>
-        <td class="n">237.9M</td>
+        <td class="n">2,043</td>
+        <td class="n">239.9M</td>
         <td class="n">4</td>
         <td class="n">4/4</td>
       </tr>
       <tr class="total">
         <td class="rowlbl">Total</td>
-        <td class="n">5,758</td>
-        <td class="n">215,065</td>
-        <td class="n">12.29B</td>
+        <td class="n">5,759</td>
+        <td class="n">215,113</td>
+        <td class="n">12.30B</td>
         <td class="n">57</td>
         <td class="n">38/38</td>
       </tr>
@@ -215,7 +219,7 @@
 
   <div class="footer">
     &ldquo;Slow is smooth, smooth is fast.&rdquo;
-    <span class="stamp">Updated 2026-07-18 10:44</span>
+    <span class="stamp">Updated 2026-07-18 10:48</span>
   </div>
 
 </body></html>
