@@ -3,7 +3,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- ts is the epoch second at render time; +30 makes the next URL distinct so GitHub Pages CDN can't serve a cached copy on refresh -->
-  <meta http-equiv="refresh" content="30; url=https://mikezy.github.io/pulse-display/?t=1784787960">
+  <meta http-equiv="refresh" content="30; url=https://mikezy.github.io/pulse-display/?t=1784788244">
   <title>Pulse</title>
   <style>
     /* Tuned for Kindle Colorsoft (~1264x1680 physical / 632x840 CSS px, 7" portrait).
@@ -134,8 +134,8 @@
 
   <h2>SYSTEM</h2>
   <table class="grid"><tr>
-    <td><div class="num">14.8%</div><div class="lbl">CPU</div></td>
-    <td><div class="num">17.7/48.0</div><div class="lbl">RAM (GB)</div></td>
+    <td><div class="num">22.4%</div><div class="lbl">CPU</div></td>
+    <td><div class="num">17.3/48.0</div><div class="lbl">RAM (GB)</div></td>
     <td><div class="num">13/494</div><div class="lbl">DISK (GB)</div></td>
     <td><div class="num">100%<span style="font-size:14px;"> AC</span></div><div class="lbl">BATTERY</div></td>
   </tr></table>
@@ -151,8 +151,8 @@
     <tbody>
       <tr>
         <td class="rowlbl">Claude</td>
-        <td class="n">5,874</td>
-        <td class="n">216,176</td>
+        <td class="n">5,875</td>
+        <td class="n">216,226</td>
         <td class="n">12.19B</td>
         <td class="n">45</td>
         <td class="n">42/42</td>
@@ -183,8 +183,8 @@
       </tr>
       <tr class="total">
         <td class="rowlbl">Total</td>
-        <td class="n">5,964</td>
-        <td class="n">224,120</td>
+        <td class="n">5,965</td>
+        <td class="n">224,170</td>
         <td class="n">13.10B</td>
         <td class="n">61</td>
         <td class="n">42/42</td>
@@ -202,9 +202,9 @@
       
       <tr><td class="h2"></td><td class="h1"></td><td class="h3"></td><td class="h2"></td></tr>
       
-      <tr><td class="h2"></td><td class="h1"></td><td class="h2"></td><td class="h2"></td></tr>
+      <tr><td class="h2"></td><td class="h1"></td><td class="h2"></td><td class="h1"></td></tr>
       
-      <tr><td class="h3"></td><td class="h2"></td><td class="h2"></td><td class="h1"></td></tr>
+      <tr><td class="h3"></td><td class="h2"></td><td class="h2"></td><td class="h2"></td></tr>
       
       <tr><td class="h3"></td><td class="h2"></td><td class="h2"></td><td class="h0"></td></tr>
       
@@ -217,9 +217,130 @@
     </table>
   </div>
 
+  <!-- ===== BEGIN CODEX-ZERO AGENT SNIPPET ===== -->
+<section class="cz-agent" aria-label="Agent status">
+  <style>
+    .cz-agent{font-family:"Courier New",Courier,monospace;color:#000;margin:16px 0;}
+    .cz-agent .cz-agent-h{font-size:20px;font-weight:bold;letter-spacing:2px;
+      border-bottom:2px solid #000;padding-bottom:4px;margin:0 0 10px;}
+    .cz-agent .cz-agent-list{list-style:none;margin:0;padding:0;}
+    .cz-agent .cz-agent-row{display:flex;align-items:center;
+      border:1px solid #000;border-left-width:6px;margin:0 0 8px;padding:8px 10px;}
+    .cz-agent .cz-agent-slot{font-weight:bold;font-size:16px;min-width:64px;}
+    .cz-agent .cz-agent-chip{min-width:132px;font-weight:bold;font-size:15px;
+      letter-spacing:1px;padding:4px 8px;margin:0 12px 0 0;text-align:center;
+      border:1px solid #000;}
+    .cz-agent .cz-agent-task{flex:1;font-size:15px;overflow:hidden;
+      white-space:nowrap;text-overflow:ellipsis;}
+    .cz-agent .cz-agent-ts{font-size:12px;color:#000;margin-left:10px;opacity:.7;}
+    .cz-agent .cz-agent-empty{border:1px dashed #000;padding:10px;font-size:14px;}
+
+    /* Five states: lightness ordering + label + glyph + border weight.
+       No hue — safe on grayscale e-ink. Ordered light(idle) -> dark(error). */
+    .cz-agent .cz-s-idle       {background:#ececec;}
+    .cz-agent .cz-s-complete   {background:#d2d2d2;}
+    .cz-agent .cz-s-thinking   {background:#a6a6a6;}
+    .cz-agent .cz-s-needs-input{background:#000;color:#fff;border-color:#fff;}
+    .cz-agent .cz-s-error      {background:#000;color:#fff;border:3px double #fff;}
+
+    /* Row emphasis mirrors the state so a glance across the left bar reads it. */
+    .cz-agent .cz-row-idle       {border-left-color:#bdbdbd;}
+    .cz-agent .cz-row-complete   {border-left-color:#8a8a8a;}
+    .cz-agent .cz-row-thinking   {border-left-color:#555;}
+    .cz-agent .cz-row-needs-input{border-left-color:#000;background:#f4f4f4;}
+    .cz-agent .cz-row-error      {border-left-color:#000;background:#f4f4f4;}
+  </style>
+
+  <h2 class="cz-agent-h">AGENT</h2>
+  <ul class="cz-agent-list" id="cz-agent-list">
+    <li class="cz-agent-empty">Waiting for agent status&hellip;</li>
+  </ul>
+
+  <script>
+  (function () {
+    "use strict";
+    var STATUS_URL = "agent-status.json"; // sits next to index.html in docs/
+    var POLL_MS = 45000;                  // ~45s; see notes on end-to-end latency
+
+    // state -> { label, glyph, class }. Redundant coding for grayscale/e-ink.
+    var STATES = {
+      "idle":        { label: "IDLE",        glyph: "·", cls: "idle" },        // ·
+      "thinking":    { label: "THINKING",    glyph: "…", cls: "thinking" },    // …
+      "complete":    { label: "COMPLETE",    glyph: "✓", cls: "complete" },    // ✓
+      "needs-input": { label: "NEEDS INPUT", glyph: "!",      cls: "needs-input" },
+      "error":       { label: "ERROR",       glyph: "×", cls: "error" }        // ×
+    };
+
+    function esc(s) {
+      s = (s == null) ? "" : String(s);
+      return s.replace(/&/g, "&amp;").replace(/</g, "&lt;")
+              .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+    }
+
+    function shortTime(ts) {
+      // Show HH:MM UTC from an ISO string, defensively.
+      if (!ts) { return ""; }
+      var m = /T(\d{2}:\d{2})/.exec(String(ts));
+      return m ? (m[1] + " UTC") : esc(ts);
+    }
+
+    function render(agents) {
+      var list = document.getElementById("cz-agent-list");
+      if (!list) { return; }
+      if (!agents || !agents.length) {
+        list.innerHTML = '<li class="cz-agent-empty">No active agents.</li>';
+        return;
+      }
+      agents.sort(function (a, b) { return (a.slot || 0) - (b.slot || 0); });
+      var html = "";
+      for (var i = 0; i < agents.length; i++) {
+        var a = agents[i] || {};
+        var st = STATES[a.state] || STATES.idle;
+        html +=
+          '<li class="cz-agent-row cz-row-' + st.cls + '">' +
+            '<span class="cz-agent-slot">SLOT ' + esc(a.slot) + '</span>' +
+            '<span class="cz-agent-chip cz-s-' + st.cls + '">' +
+              st.glyph + ' ' + st.label +
+            '</span>' +
+            '<span class="cz-agent-task">' + esc(a.task || "—") + '</span>' +
+            '<span class="cz-agent-ts">' + shortTime(a.ts) + '</span>' +
+          '</li>';
+      }
+      list.innerHTML = html;
+    }
+
+    var bust = 0;
+    function poll() {
+      bust++;
+      var xhr = new XMLHttpRequest();
+      var url = STATUS_URL + (STATUS_URL.indexOf("?") < 0 ? "?" : "&") + "t=" + bust;
+      try {
+        xhr.open("GET", url, true);
+        xhr.onreadystatechange = function () {
+          if (xhr.readyState !== 4) { return; }
+          if (xhr.status >= 200 && xhr.status < 300) {
+            try {
+              var data = JSON.parse(xhr.responseText);
+              var agents = (data && data.agents) ? data.agents :
+                           (data && data.length ? data : []); // tolerate bare array
+              render(agents);
+            } catch (e) { /* keep last good render */ }
+          }
+        };
+        xhr.send();
+      } catch (e) { /* keep last good render */ }
+    }
+
+    poll();
+    setInterval(poll, POLL_MS);
+  })();
+  </script>
+</section>
+<!-- ===== END CODEX-ZERO AGENT SNIPPET ===== -->
+
   <div class="footer">
-    &ldquo;The cost of not doing the work shows up later.&rdquo;
-    <span class="stamp">Updated 2026-07-22 23:25</span>
+    &ldquo;Small steps, every day.&rdquo;
+    <span class="stamp">Updated 2026-07-22 23:30</span>
   </div>
 
 </body></html>
