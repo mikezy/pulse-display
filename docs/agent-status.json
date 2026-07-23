@@ -3,9 +3,9 @@
     {
       "slot": 1,
       "state": "idle",
-      "task": "session",
-      "ts": "2026-07-23T06:17:23Z"
+      "task": "smoke test",
+      "ts": "2026-07-23T06:31:47Z"
     }
   ],
-  "updated": "2026-07-23T06:17:23Z"
+  "updated": "2026-07-23T06:31:47Z"
 }
