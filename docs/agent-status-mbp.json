@@ -2,10 +2,10 @@
   "agents": [
     {
       "slot": 1,
-      "state": "thinking",
-      "task": "mbp setup test",
-      "ts": "2026-07-23T19:06:39Z"
+      "state": "needs-input",
+      "task": "session",
+      "ts": "2026-07-23T19:12:51Z"
     }
   ],
-  "updated": "2026-07-23T19:06:39Z"
+  "updated": "2026-07-23T19:12:51Z"
 }
