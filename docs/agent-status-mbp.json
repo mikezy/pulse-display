@@ -1,0 +1,11 @@
+{
+  "agents": [
+    {
+      "slot": 1,
+      "state": "thinking",
+      "task": "mbp setup test",
+      "ts": "2026-07-23T19:06:39Z"
+    }
+  ],
+  "updated": "2026-07-23T19:06:39Z"
+}
