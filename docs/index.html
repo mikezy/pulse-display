@@ -3,7 +3,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- ts is the epoch second at render time; +30 makes the next URL distinct so GitHub Pages CDN can't serve a cached copy on refresh -->
-  <meta http-equiv="refresh" content="30; url=https://mikezy.github.io/pulse-display/?t=1784837267">
+  <meta http-equiv="refresh" content="30; url=https://mikezy.github.io/pulse-display/?t=1784837531">
   <title>Pulse</title>
   <style>
     /* Tuned for Kindle Colorsoft (~1264x1680 physical / 632x840 CSS px, 7" portrait).
@@ -134,8 +134,8 @@
 
   <h2>SYSTEM</h2>
   <table class="grid"><tr>
-    <td><div class="num">47.2%</div><div class="lbl">CPU</div></td>
-    <td><div class="num">17.6/48.0</div><div class="lbl">RAM (GB)</div></td>
+    <td><div class="num">38.8%</div><div class="lbl">CPU</div></td>
+    <td><div class="num">18.5/48.0</div><div class="lbl">RAM (GB)</div></td>
     <td><div class="num">13/494</div><div class="lbl">DISK (GB)</div></td>
     <td><div class="num">80%<span style="font-size:14px;"> AC</span></div><div class="lbl">BATTERY</div></td>
   </tr></table>
@@ -151,8 +151,8 @@
     <tbody>
       <tr>
         <td class="rowlbl">Claude</td>
-        <td class="n">5,897</td>
-        <td class="n">216,936</td>
+        <td class="n">5,900</td>
+        <td class="n">216,999</td>
         <td class="n">12.25B</td>
         <td class="n">46</td>
         <td class="n">43/43</td>
@@ -160,8 +160,8 @@
       <tr>
         <td class="rowlbl">Codex</td>
         <td class="n">23</td>
-        <td class="n">2,826</td>
-        <td class="n">351.2M</td>
+        <td class="n">2,828</td>
+        <td class="n">351.7M</td>
         <td class="n">8</td>
         <td class="n">4/4</td>
       </tr>
@@ -183,8 +183,8 @@
       </tr>
       <tr class="total">
         <td class="rowlbl">Total</td>
-        <td class="n">5,993</td>
-        <td class="n">225,460</td>
+        <td class="n">5,996</td>
+        <td class="n">225,525</td>
         <td class="n">13.22B</td>
         <td class="n">62</td>
         <td class="n">43/43</td>
@@ -259,7 +259,12 @@
   <script>
   (function () {
     "use strict";
-    var STATUS_URL = "agent-status.json"; // sits next to index.html in docs/
+    // One file per publishing machine (single-writer rule — no SHA races).
+    // Both sit next to index.html in docs/.
+    var SOURCES = [
+      { url: "agent-status.json",     tag: "MINI" },
+      { url: "agent-status-mbp.json", tag: "MBP"  }
+    ];
     var POLL_MS = 45000;                  // ~45s; see notes on end-to-end latency
 
     // state -> { label, glyph, class }. Redundant coding for grayscale/e-ink.
@@ -291,14 +296,18 @@
         list.innerHTML = '<li class="cz-agent-empty">No active agents.</li>';
         return;
       }
-      agents.sort(function (a, b) { return (a.slot || 0) - (b.slot || 0); });
+      agents.sort(function (a, b) {
+        if ((a.tag || "") !== (b.tag || "")) { return (a.tag || "") < (b.tag || "") ? -1 : 1; }
+        return (a.slot || 0) - (b.slot || 0);
+      });
       var html = "";
       for (var i = 0; i < agents.length; i++) {
         var a = agents[i] || {};
         var st = STATES[a.state] || STATES.idle;
+        var slotLbl = (a.tag ? a.tag + " " : "") + esc(a.slot);
         html +=
           '<li class="cz-agent-row cz-row-' + st.cls + '">' +
-            '<span class="cz-agent-slot">SLOT ' + esc(a.slot) + '</span>' +
+            '<span class="cz-agent-slot">' + slotLbl + '</span>' +
             '<span class="cz-agent-chip cz-s-' + st.cls + '">' +
               st.glyph + ' ' + st.label +
             '</span>' +
@@ -310,10 +319,12 @@
     }
 
     var bust = 0;
-    function poll() {
-      bust++;
+    // Per-source cache so one machine going quiet/missing (e.g. 404 before its
+    // first publish) never blanks the other machine's rows.
+    var latest = {};
+    function fetchOne(src) {
       var xhr = new XMLHttpRequest();
-      var url = STATUS_URL + (STATUS_URL.indexOf("?") < 0 ? "?" : "&") + "t=" + bust;
+      var url = src.url + (src.url.indexOf("?") < 0 ? "?" : "&") + "t=" + bust;
       try {
         xhr.open("GET", url, true);
         xhr.onreadystatechange = function () {
@@ -323,12 +334,24 @@
               var data = JSON.parse(xhr.responseText);
               var agents = (data && data.agents) ? data.agents :
                            (data && data.length ? data : []); // tolerate bare array
-              render(agents);
+              for (var i = 0; i < agents.length; i++) {
+                if (agents[i]) { agents[i].tag = src.tag; }
+              }
+              latest[src.tag] = agents;
+              var merged = [];
+              for (var k in latest) {
+                if (latest.hasOwnProperty(k)) { merged = merged.concat(latest[k]); }
+              }
+              render(merged);
             } catch (e) { /* keep last good render */ }
           }
         };
         xhr.send();
       } catch (e) { /* keep last good render */ }
+    }
+    function poll() {
+      bust++;
+      for (var i = 0; i < SOURCES.length; i++) { fetchOne(SOURCES[i]); }
     }
 
     poll();
@@ -339,8 +362,8 @@
 <!-- ===== END CODEX-ZERO AGENT SNIPPET ===== -->
 
   <div class="footer">
-    &ldquo;Ship beats perfect.&rdquo;
-    <span class="stamp">Updated 2026-07-23 13:07</span>
+    &ldquo;Numbers don&#39;t lie. Dashboards sometimes do.&rdquo;
+    <span class="stamp">Updated 2026-07-23 13:11</span>
   </div>
 
 </body></html>
