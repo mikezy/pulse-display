@@ -3,7 +3,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- ts is the epoch second at render time; +30 makes the next URL distinct so GitHub Pages CDN can't serve a cached copy on refresh -->
-  <meta http-equiv="refresh" content="30; url=https://mikezy.github.io/pulse-display/?t=1784851792">
+  <meta http-equiv="refresh" content="30; url=https://mikezy.github.io/pulse-display/?t=1784851973">
   <title>Pulse</title>
   <style>
     /* Tuned for Kindle Colorsoft (~1264x1680 physical / 632x840 CSS px, 7" portrait).
@@ -134,8 +134,8 @@
 
   <h2>SYSTEM</h2>
   <table class="grid"><tr>
-    <td><div class="num">26.1%</div><div class="lbl">CPU</div></td>
-    <td><div class="num">22.2/48.0</div><div class="lbl">RAM (GB)</div></td>
+    <td><div class="num">24.6%</div><div class="lbl">CPU</div></td>
+    <td><div class="num">20.0/48.0</div><div class="lbl">RAM (GB)</div></td>
     <td><div class="num">13/494</div><div class="lbl">DISK (GB)</div></td>
     <td><div class="num">99%<span style="font-size:14px;"> AC</span></div><div class="lbl">BATTERY</div></td>
   </tr></table>
@@ -151,17 +151,17 @@
     <tbody>
       <tr>
         <td class="rowlbl">Claude</td>
-        <td class="n">5,927</td>
-        <td class="n">217,812</td>
-        <td class="n">12.31B</td>
+        <td class="n">5,928</td>
+        <td class="n">217,885</td>
+        <td class="n">12.32B</td>
         <td class="n">46</td>
         <td class="n">43/43</td>
       </tr>
       <tr>
         <td class="rowlbl">Codex</td>
         <td class="n">32</td>
-        <td class="n">3,134</td>
-        <td class="n">372.8M</td>
+        <td class="n">3,142</td>
+        <td class="n">374.4M</td>
         <td class="n">8</td>
         <td class="n">4/4</td>
       </tr>
@@ -183,9 +183,9 @@
       </tr>
       <tr class="total">
         <td class="rowlbl">Total</td>
-        <td class="n">6,032</td>
-        <td class="n">226,689</td>
-        <td class="n">13.30B</td>
+        <td class="n">6,033</td>
+        <td class="n">226,770</td>
+        <td class="n">13.31B</td>
         <td class="n">62</td>
         <td class="n">43/43</td>
       </tr>
@@ -265,7 +265,7 @@
       { url: "agent-status.json",     tag: "MINI" },
       { url: "agent-status-mbp.json", tag: "MBP"  }
     ];
-    var POLL_MS = 45000;                  // ~45s; see notes on end-to-end latency
+    var POLL_MS = 15000;                  // 15s — demo-tight; pairs with push-on-change publishing
 
     // state -> { label, glyph, class }. Redundant coding for grayscale/e-ink.
     var STATES = {
@@ -362,8 +362,8 @@
 <!-- ===== END CODEX-ZERO AGENT SNIPPET ===== -->
 
   <div class="footer">
-    &ldquo;Make the invisible visible.&rdquo;
-    <span class="stamp">Updated 2026-07-23 17:09</span>
+    &ldquo;Slow is smooth, smooth is fast.&rdquo;
+    <span class="stamp">Updated 2026-07-23 17:12</span>
   </div>
 
 </body></html>
