@@ -2,10 +2,10 @@
   "agents": [
     {
       "slot": 1,
-      "state": "complete",
+      "state": "idle",
       "task": "session",
-      "ts": "2026-07-24T00:54:06Z"
+      "ts": "2026-07-24T00:54:52Z"
     }
   ],
-  "updated": "2026-07-24T00:54:06Z"
+  "updated": "2026-07-24T00:54:52Z"
 }
