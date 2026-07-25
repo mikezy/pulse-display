@@ -3,7 +3,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- ts is the epoch second at render time; +30 makes the next URL distinct so GitHub Pages CDN can't serve a cached copy on refresh -->
-  <meta http-equiv="refresh" content="30; url=https://mikezy.github.io/pulse-display/?t=1785006923">
+  <meta http-equiv="refresh" content="30; url=https://mikezy.github.io/pulse-display/?t=1785007084">
   <title>Pulse</title>
   <style>
     /* Tuned for Kindle Colorsoft (~1264x1680 physical / 632x840 CSS px, 7" portrait).
@@ -134,10 +134,10 @@
 
   <h2>SYSTEM</h2>
   <table class="grid"><tr>
-    <td><div class="num">15.3%</div><div class="lbl">CPU</div></td>
-    <td><div class="num">19.2/48.0</div><div class="lbl">RAM (GB)</div></td>
+    <td><div class="num">19.1%</div><div class="lbl">CPU</div></td>
+    <td><div class="num">16.2/48.0</div><div class="lbl">RAM (GB)</div></td>
     <td><div class="num">13/494</div><div class="lbl">DISK (GB)</div></td>
-    <td><div class="num">76%</div><div class="lbl">BATTERY</div></td>
+    <td><div class="num">75%</div><div class="lbl">BATTERY</div></td>
   </tr></table>
 
   <h2>CODING AGENTS &middot; ALL TIME</h2>
@@ -151,8 +151,8 @@
     <tbody>
       <tr>
         <td class="rowlbl">Claude</td>
-        <td class="n">6,063</td>
-        <td class="n">223,274</td>
+        <td class="n">6,064</td>
+        <td class="n">223,305</td>
         <td class="n">12.87B</td>
         <td class="n">48</td>
         <td class="n">45/45</td>
@@ -183,8 +183,8 @@
       </tr>
       <tr class="total">
         <td class="rowlbl">Total</td>
-        <td class="n">6,168</td>
-        <td class="n">233,569</td>
+        <td class="n">6,169</td>
+        <td class="n">233,600</td>
         <td class="n">14.02B</td>
         <td class="n">64</td>
         <td class="n">45/45</td>
@@ -318,13 +318,15 @@
       list.innerHTML = html;
     }
 
-    var bust = 0;
     // Per-source cache so one machine going quiet/missing (e.g. 404 before its
     // first publish) never blanks the other machine's rows.
     var latest = {};
     function fetchOne(src) {
       var xhr = new XMLHttpRequest();
-      var url = src.url + (src.url.indexOf("?") < 0 ? "?" : "&") + "t=" + bust;
+      // Cache-buster MUST be clock-based: the page meta-refreshes every 30s,
+      // which would reset a counter to 1 and let the Pages CDN (max-age=600)
+      // serve the same stale copy for up to 10 min per URL.
+      var url = src.url + (src.url.indexOf("?") < 0 ? "?" : "&") + "t=" + (new Date().getTime());
       try {
         xhr.open("GET", url, true);
         xhr.onreadystatechange = function () {
@@ -350,7 +352,6 @@
       } catch (e) { /* keep last good render */ }
     }
     function poll() {
-      bust++;
       for (var i = 0; i < SOURCES.length; i++) { fetchOne(SOURCES[i]); }
     }
 
@@ -362,8 +363,8 @@
 <!-- ===== END CODEX-ZERO AGENT SNIPPET ===== -->
 
   <div class="footer">
-    &ldquo;Kindle: the original e-ink dashboard.&rdquo;
-    <span class="stamp">Updated 2026-07-25 12:14</span>
+    &ldquo;The cost of not doing the work shows up later.&rdquo;
+    <span class="stamp">Updated 2026-07-25 12:17</span>
   </div>
 
 </body></html>
