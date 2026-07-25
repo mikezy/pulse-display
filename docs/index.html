@@ -3,7 +3,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- ts is the epoch second at render time; +30 makes the next URL distinct so GitHub Pages CDN can't serve a cached copy on refresh -->
-  <meta http-equiv="refresh" content="30; url=https://mikezy.github.io/pulse-display/?t=1785012292">
+  <meta http-equiv="refresh" content="30; url=https://mikezy.github.io/pulse-display/?t=1785012393">
   <title>Pulse</title>
   <style>
     /* Tuned for Kindle Colorsoft (~1264x1680 physical / 632x840 CSS px, 7" portrait).
@@ -134,10 +134,10 @@
 
   <h2>SYSTEM</h2>
   <table class="grid"><tr>
-    <td><div class="num">24.2%</div><div class="lbl">CPU</div></td>
+    <td><div class="num">24.1%</div><div class="lbl">CPU</div></td>
     <td><div class="num">18.9/48.0</div><div class="lbl">RAM (GB)</div></td>
     <td><div class="num">13/494</div><div class="lbl">DISK (GB)</div></td>
-    <td><div class="num">67%<span style="font-size:14px;"> AC</span></div><div class="lbl">BATTERY</div></td>
+    <td><div class="num">69%<span style="font-size:14px;"> AC</span></div><div class="lbl">BATTERY</div></td>
   </tr></table>
 
   <h2>CODING AGENTS &middot; ALL TIME</h2>
@@ -152,7 +152,7 @@
       <tr>
         <td class="rowlbl">Claude</td>
         <td class="n">6,065</td>
-        <td class="n">223,331</td>
+        <td class="n">223,345</td>
         <td class="n">12.87B</td>
         <td class="n">48</td>
         <td class="n">45/45</td>
@@ -184,7 +184,7 @@
       <tr class="total">
         <td class="rowlbl">Total</td>
         <td class="n">6,170</td>
-        <td class="n">233,636</td>
+        <td class="n">233,650</td>
         <td class="n">14.03B</td>
         <td class="n">64</td>
         <td class="n">45/45</td>
@@ -283,10 +283,21 @@
     }
 
     function shortTime(ts) {
-      // Show HH:MM UTC from an ISO string, defensively.
+      // Show HH:MM in Pacific Time, ES5/old-browser safe (no Intl).
+      // PT offset from UTC: PDT = -7 (Mar–Nov), PST = -8. DST switch dates
+      // (2nd Sun Mar / 1st Sun Nov) are approximated by month — off by at
+      // most a few days per year, acceptable for a status lamp.
       if (!ts) { return ""; }
-      var m = /T(\d{2}:\d{2})/.exec(String(ts));
-      return m ? (m[1] + " UTC") : esc(ts);
+      var m = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/.exec(String(ts));
+      if (!m) { return esc(ts); }
+      var mo = parseInt(m[2], 10);
+      var offset = (mo >= 3 && mo <= 10) ? -7 : -8; // Mar–Oct ≈ PDT, Nov–Feb ≈ PST
+      // Do the subtraction via epoch millis so day rollover is handled.
+      var d = new Date(Date.UTC(parseInt(m[1],10), mo - 1, parseInt(m[3],10),
+                                parseInt(m[4],10), parseInt(m[5],10)));
+      d = new Date(d.getTime() + offset * 3600000);
+      var hh = d.getUTCHours(), mi = d.getUTCMinutes();
+      return (hh < 10 ? "0" : "") + hh + ":" + (mi < 10 ? "0" : "") + mi + " PT";
     }
 
     function render(agents) {
@@ -363,8 +374,8 @@
 <!-- ===== END CODEX-ZERO AGENT SNIPPET ===== -->
 
   <div class="footer">
-    &ldquo;Slow is smooth, smooth is fast.&rdquo;
-    <span class="stamp">Updated 2026-07-25 13:44</span>
+    &ldquo;Small steps, every day.&rdquo;
+    <span class="stamp">Updated 2026-07-25 13:46</span>
   </div>
 
 </body></html>
