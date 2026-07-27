@@ -8,7 +8,7 @@
     },
     {
       "slot": 2,
-      "state": "complete",
+      "state": "idle",
       "task": "session",
       "ts": "2026-07-27T23:55:13Z"
     }
