@@ -14,10 +14,10 @@
     },
     {
       "slot": 3,
-      "state": "complete",
+      "state": "idle",
       "task": "session",
-      "ts": "2026-07-28T00:19:07Z"
+      "ts": "2026-07-28T00:51:20Z"
     }
   ],
-  "updated": "2026-07-28T00:19:07Z"
+  "updated": "2026-07-28T00:51:20Z"
 }
