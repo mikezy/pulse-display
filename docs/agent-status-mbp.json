@@ -10,7 +10,7 @@
       "slot": 2,
       "state": "complete",
       "task": "session",
-      "ts": "2026-08-04T07:28:30Z"
+      "ts": "2026-08-06T08:29:00Z"
     },
     {
       "slot": 3,
@@ -32,10 +32,10 @@
     },
     {
       "slot": 6,
-      "state": "complete",
+      "state": "idle",
       "task": "session",
-      "ts": "2026-08-06T08:28:23Z"
+      "ts": "2026-08-06T08:29:01Z"
     }
   ],
-  "updated": "2026-08-06T08:28:23Z"
+  "updated": "2026-08-06T08:29:01Z"
 }
