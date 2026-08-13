@@ -50,10 +50,10 @@
     },
     {
       "slot": 9,
-      "state": "complete",
+      "state": "idle",
       "task": "session",
-      "ts": "2026-08-13T16:08:35Z"
+      "ts": "2026-08-13T16:09:00Z"
     }
   ],
-  "updated": "2026-08-13T16:08:55Z"
+  "updated": "2026-08-13T16:09:00Z"
 }
