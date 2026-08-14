@@ -22,7 +22,7 @@
       "slot": 4,
       "state": "thinking",
       "task": "session",
-      "ts": "2026-08-14T18:20:33Z"
+      "ts": "2026-08-14T18:21:10Z"
     },
     {
       "slot": 5,
@@ -50,10 +50,10 @@
     },
     {
       "slot": 9,
-      "state": "idle",
+      "state": "complete",
       "task": "session",
-      "ts": "2026-08-14T18:20:33Z"
+      "ts": "2026-08-14T18:21:13Z"
     }
   ],
-  "updated": "2026-08-14T18:20:33Z"
+  "updated": "2026-08-14T18:21:13Z"
 }
