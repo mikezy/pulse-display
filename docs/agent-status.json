@@ -14,7 +14,7 @@
     },
     {
       "slot": 3,
-      "state": "thinking",
+      "state": "idle",
       "task": "session",
       "ts": "2026-08-26T06:06:03Z"
     }
