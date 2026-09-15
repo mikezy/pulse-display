@@ -2,9 +2,9 @@
   "agents": [
     {
       "slot": 1,
-      "state": "complete",
+      "state": "idle",
       "task": "display session",
-      "ts": "2026-09-14T07:48:47Z"
+      "ts": "2026-09-15T13:58:30Z"
     },
     {
       "slot": 2,
@@ -55,5 +55,5 @@
       "ts": "2026-09-12T06:00:04Z"
     }
   ],
-  "updated": "2026-09-15T07:09:54Z"
+  "updated": "2026-09-15T13:58:30Z"
 }
